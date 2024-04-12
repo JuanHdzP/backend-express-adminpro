@@ -9,6 +9,9 @@ const app = express();
 // Configurar cors
 app.use(cors());
 
+// Lectura y parseo del Body
+app.use(express.json());
+
 // Base de datos
 dbConnection();
 
@@ -19,6 +22,11 @@ app.listen(3000, () => {
 });
 
 // Rutas
-app.get("/", (req, res) => {
-  res.json({ ok: true, msg: "Hola" });
-});
+
+// Antes
+// app.get("/api/usuarios", (req, res) => {
+//   res.json({ ok: true, usuarios: [{id: 123, nombre: "Juan"}] });
+// });
+
+// Despues
+app.use("/api/usuarios", require("./routes/usuarios"));
