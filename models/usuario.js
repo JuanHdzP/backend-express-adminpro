@@ -20,7 +20,7 @@ const UsuarioSchema = Schema({
   role: {
     type: String,
     required: true,
-    default: "USER_ROL",
+    default: "USER_ROLE",
   },
   google: {
     type: Boolean,
@@ -28,10 +28,10 @@ const UsuarioSchema = Schema({
   },
 });
 
-// Modificacion para retornar el modelo sin __v y reemplazando _id por uid
+// Modificacion para retornar el modelo sin "__v, password" y reemplazar _id por uid
 // *Esto no afecta la db es solo visual*
 UsuarioSchema.method("toJSON", function () {
-  const { __v, _id, ...object } = this.toObject();
+  const { __v, _id, password, ...object } = this.toObject();
   object.uid = _id;
   return object;
 });
