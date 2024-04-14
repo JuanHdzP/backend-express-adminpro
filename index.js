@@ -30,3 +30,4 @@ app.listen(3000, () => {
 
 // Despues
 app.use("/api/usuarios", require("./routes/usuarios"));
+app.use("/api/login", require("./routes/auth"));

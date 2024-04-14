@@ -1,6 +1,7 @@
 const { response } = require("express");
 const bcrypt = require("bcryptjs");
 const Usuario = require("../models/usuario");
+const { generarJWT } = require("../helpers/jwt");
 const getUsuarios = async (req, res = response) => {
   // En el metodo find se aplica un filtro de lo que queremos mandar en el json
   const usuarios = await Usuario.find({}, "nombre email role google");
@@ -25,7 +26,11 @@ const crearUsuario = async (req, res = response) => {
     const salt = bcrypt.genSaltSync();
     usuario.password = bcrypt.hashSync(password, salt);
     await usuario.save();
-    res.json({ ok: true, usuario: usuario });
+
+    // Generar JWT con funcion helpers/jwt/generarJWT()
+    const token = await generarJWT(usuario.id);
+
+    res.json({ ok: true, usuario: usuario, token: token });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -83,8 +88,36 @@ const actualizarUsuario = async (req, res = response) => {
   }
 };
 
+const borrarUsuario = async (req, res = response) => {
+  const uid = req.params.id;
+
+  try {
+    const usuarioDB = await Usuario.findById(uid);
+    if (!usuarioDB) {
+      return res.status(404).json({
+        ok: false,
+        msg: "No existe usuario con ese id",
+      });
+    }
+
+    await Usuario.findByIdAndDelete(uid);
+    return res.json({
+      ok: true,
+      msg: "Usuario eliminado",
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      ok: false,
+      msg: "Error inesperado, hablar con el administrador",
+    });
+  }
+};
+
 module.exports = {
   getUsuarios,
   crearUsuario,
   actualizarUsuario,
+  borrarUsuario,
 };
