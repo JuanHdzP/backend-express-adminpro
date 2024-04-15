@@ -2,10 +2,26 @@ const { response } = require("express");
 const bcrypt = require("bcryptjs");
 const Usuario = require("../models/usuario");
 const { generarJWT } = require("../helpers/jwt");
+
 const getUsuarios = async (req, res = response) => {
-  // En el metodo find se aplica un filtro de lo que queremos mandar en el json
-  const usuarios = await Usuario.find({}, "nombre email role google");
-  res.json({ ok: true, usuarios: usuarios });
+  const desde = Number(req.query.desde) || 0;
+  // En el metodo find se aplica un filtro de la data que deseamos del usuario
+
+  // const usuarios = await Usuario.find({}, "nombre email role google")
+  //   .skip(desde) // skip nos ayuda a definir el punto inicial de la paginacion
+  //   .limit(5); // limit nos ayuda a establecer cuantos registros queremos para la paginacion
+
+  // const total = await Usuario.count();
+
+  // Optimisacion para generar anteriores promesas de forma simultanea y obtener los resultados por medio de desestructuracion
+  const [usuarios, total] = await Promise.all([
+    Usuario.find({}, "nombre email role google")
+      .skip(desde) // skip nos ayuda a definir el punto inicial de la paginacion
+      .limit(5), // limit nos ayuda a establecer cuantos registros queremos para la paginacion
+
+    Usuario.count(),
+  ]);
+  res.json({ ok: true, usuarios: usuarios, total: total });
 };
 
 const crearUsuario = async (req, res = response) => {
