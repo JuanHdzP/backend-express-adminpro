@@ -1,4 +1,5 @@
 // Ruta /api/todo/:busqueda
+// Ruta /api/todo/:tabla/:busqueda
 
 const { Router } = require("express");
 

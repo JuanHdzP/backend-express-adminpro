@@ -15,11 +15,11 @@ const getUsuarios = async (req, res = response) => {
 
   // Optimisacion para generar anteriores promesas de forma simultanea y obtener los resultados por medio de desestructuracion
   const [usuarios, total] = await Promise.all([
-    Usuario.find({}, "nombre email role google")
+    Usuario.find({}, "nombre email role img google")
       .skip(desde) // skip nos ayuda a definir el punto inicial de la paginacion
       .limit(5), // limit nos ayuda a establecer cuantos registros queremos para la paginacion
 
-    Usuario.count(),
+    Usuario.countDocuments(),
   ]);
   res.json({ ok: true, usuarios: usuarios, total: total });
 };
