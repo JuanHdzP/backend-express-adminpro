@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div
+      id="g_id_onload"
+      data-client_id="606472675204-nv9d384uend88pm2pcs8dunjrulp9qqf.apps.googleusercontent.com"
+      data-callback="handleCredentialResponse"
+    ></div>
+
+    <a href="#" onclick="signOut();">Sign Out</a>
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <script>
+      function handleCredentialResponse(response) {
+        // Token sin decodificar
+        console.log("Token:", response.credential);
+        // Decodificar el token JWT manualmente
+        const decodedToken = parseJwt(response.credential);
+
+        console.log("Decoded Token:", decodedToken);
+
+        // Extraer los datos necesarios del token decodificado
+        const responsePayload = {
+          sub: decodedToken.sub,
+          name: decodedToken.name,
+          given_name: decodedToken.given_name,
+          family_name: decodedToken.family_name,
+          picture: decodedToken.picture,
+          email: decodedToken.email,
+        };
+
+        console.log("ID: " + responsePayload.sub);
+        console.log("Full Name: " + responsePayload.name);
+        console.log("Given Name: " + responsePayload.given_name);
+        console.log("Family Name: " + responsePayload.family_name);
+        console.log("Image URL: " + responsePayload.picture);
+        console.log("Email: " + responsePayload.email);
+      }
+
+      // Función para decodificar el token JWT manualmente
+      function parseJwt(token) {
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split("")
+            .map(function (c) {
+              return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+            })
+            .join("")
+        );
+
+        return JSON.parse(jsonPayload);
+      }
+
+      // Función para realizar el Sign Out
+      function signOut() {
+        google.accounts.id.disableAutoSelect();
+        google.accounts.id.prompt();
+        console.log("User signed out.");
+      }
+    </script>
+  </body>
+</html>

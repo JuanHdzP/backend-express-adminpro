@@ -15,6 +15,9 @@ app.use(express.json());
 // Base de datos
 dbConnection();
 
+// Directorio publico
+app.use(express.static("public"));
+
 // console.log(process.env);
 
 app.listen(3000, () => {
