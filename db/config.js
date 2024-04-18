@@ -6,6 +6,7 @@ const dbConnection = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
+      useFindAndModify: false, // Quitar mensajes en consola de Deprecation Warnings al usar findOneAndUpdate
     });
     console.log("DB Online");
   } catch (error) {

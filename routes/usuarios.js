@@ -10,6 +10,7 @@ const {
 const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
 const { validarJWT } = require("../middlewares/validar-jwt");
+const { validarMongoID } = require("../middlewares/validar-mongo-id");
 
 const router = Router();
 
@@ -35,6 +36,7 @@ router.put(
   "/:id",
   [
     validarJWT,
+    validarMongoID,
     check("nombre", "El nombre es obligatorio").not().isEmpty(),
     check("email", "El email es obligatorio").isEmail(),
     check("role", "El role es obligatorio").not().isEmpty(),
@@ -44,6 +46,6 @@ router.put(
   actualizarUsuario
 );
 // Ruta put
-router.delete("/:id", validarJWT, borrarUsuario);
+router.delete("/:id", [validarJWT, validarMongoID], borrarUsuario);
 
 module.exports = router;
