@@ -75,12 +75,19 @@ const actualizarUsuario = async (req, res = response) => {
       if (existeEmail) {
         return res.status(400).json({
           ok: false,
-          msg: "Ya existe ususario con ese email",
+          msg: "Ya existe usuario con ese email",
         });
       }
     }
 
-    campos.email = email;
+    if (!usuarioDB.google) {
+      campos.email = email;
+    } else if (usuarioDB.email !== email) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Usuarios de Google no pueden cambiar su correo",
+      });
+    }
 
     // Quito los campos que no deseo actualizar del usuario (Optimizado)
     // delete campos.password;
