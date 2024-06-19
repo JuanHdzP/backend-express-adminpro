@@ -9,6 +9,7 @@ const {
   crearMedico,
   actualizarMedico,
   borrarMedico,
+  getMedicoById,
 } = require("../controllers/medicos");
 const { validarJWT } = require("../middlewares/validar-jwt");
 const { validarMongoID } = require("../middlewares/validar-mongo-id");
@@ -16,7 +17,7 @@ const { validarMongoID } = require("../middlewares/validar-mongo-id");
 const router = Router();
 
 // Ruta get
-router.get("/", getMedicos);
+router.get("/", validarJWT, getMedicos);
 
 // Ruta post
 router.post(
@@ -45,5 +46,8 @@ router.put(
 );
 // Ruta put
 router.delete("/:id", [validarJWT, validarMongoID], borrarMedico);
+
+// Ruta get medico en especifico
+router.get("/:id", [validarJWT, validarMongoID], getMedicoById);
 
 module.exports = router;
